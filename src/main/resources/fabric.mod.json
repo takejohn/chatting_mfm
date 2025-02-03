@@ -1,0 +1,48 @@
+{
+	"schemaVersion": 1,
+	"id": "chatting_mfm",
+	"version": "${version}",
+	"name": "Chatting MFM",
+	"description": "This is an example description! Tell everyone what your mod is about!",
+	"authors": [
+		"Me!"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/chatting_mfm/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			{
+				"value": "jp.takejohn.chatting_mfm.ChattingMFM",
+				"adapter": "kotlin"
+			}
+		],
+		"client": [
+			{
+				"value": "jp.takejohn.chatting_mfm.ChattingMFMClient",
+				"adapter": "kotlin"
+			}
+		]
+	},
+	"mixins": [
+		"chatting_mfm.mixins.json",
+		{
+			"config": "chatting_mfm.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.16.10",
+		"minecraft": "~1.21.4",
+		"java": ">=21",
+		"fabric-api": "*",
+		"fabric-language-kotlin": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}
