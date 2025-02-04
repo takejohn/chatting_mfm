@@ -29,6 +29,9 @@ jobs:
         run: chmod +x ./gradlew
       - name: build
         run: ./gradlew build
+        env:
+          USERNAME_GITHUB: x-access-token
+          TOKEN_GITHUB: ${{ secrets.GITHUB_TOKEN }}
       - name: capture build artifacts
         if: ${{ matrix.java == '21' }} # Only upload artifacts built from latest java
         uses: actions/upload-artifact@v4

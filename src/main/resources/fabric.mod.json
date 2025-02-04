@@ -3,15 +3,15 @@
 	"id": "chatting_mfm",
 	"version": "${version}",
 	"name": "Chatting MFM",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"description": "Renders MFM in chat.",
 	"authors": [
-		"Me!"
+		"Take-John"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"homepage": "https://github.com/takejohn/chatting_mfm",
+		"sources": "https://github.com/takejohn/chatting_mfm"
 	},
-	"license": "CC0-1.0",
+	"license": "MIT",
 	"icon": "assets/chatting_mfm/icon.png",
 	"environment": "*",
 	"entrypoints": {
