@@ -17,6 +17,14 @@ repositories {
 	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
 	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
 	// for more information about repositories.
+
+	maven {
+		url 'https://maven.pkg.github.com/samunohito/mfm.kt'
+		credentials {
+			username = project.findProperty("gpr.user") ?: System.getenv("USERNAME_GITHUB")
+			password = project.findProperty("gpr.token") ?: System.getenv("TOKEN_GITHUB")
+		}
+	}
 }
 
 loom {
@@ -29,6 +37,7 @@ loom {
 		}
 	}
 
+	accessWidenerPath = file("src/main/resources/chatting_mfm.accesswidener")
 }
 
 dependencies {
@@ -40,6 +49,8 @@ dependencies {
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 	modImplementation "net.fabricmc:fabric-language-kotlin:${project.fabric_kotlin_version}"
+
+	implementation 'com.github.samunohito:mfm.kt:0.0.3'
 }
 
 processResources {

@@ -3,7 +3,9 @@
 	"package": "jp.takejohn.chatting_mfm.mixin.client",
 	"compatibilityLevel": "JAVA_21",
 	"client": [
-		"ExampleClientMixin"
+		"ChatHudLineVisibleMixin",
+		"TextRendererMixin",
+		"TextRendererDrawerMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
