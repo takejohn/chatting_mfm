@@ -85,7 +85,7 @@ class DrawableMfmTest {
         fun link() {
             val drawable = create("[abc](https://example.com/)")
             val expectedClickEvent = ClickEvent(ClickEvent.Action.OPEN_URL, "https://example.com/")
-            val expectedStyle = Style.EMPTY.withClickEvent(expectedClickEvent)
+            val expectedStyle = Style.EMPTY.withClickEvent(expectedClickEvent).withColor(COLOR_LINK)
             assertNull(getStyleAt(drawable, -1))
             assertEquals(expectedStyle, getStyleAt(drawable, 0))
             assertEquals(expectedStyle, getStyleAt(drawable, 17))
