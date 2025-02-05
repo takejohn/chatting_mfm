@@ -20,9 +20,11 @@ class OrderedTextWrapper(private val text: OrderedText) {
         var currentStyle: Style? = null
 
         text.accept { _, style, codePoint ->
-            if (currentStyle != null && currentStyle != style) {
-                visitor.accept(style, builder.toString())
-                builder = StringBuilder()
+            currentStyle?.let {
+                if (currentStyle != style) {
+                    visitor.accept(it, builder.toString())
+                    builder = StringBuilder()
+                }
             }
             currentStyle = style
             builder.appendCodePoint(codePoint)

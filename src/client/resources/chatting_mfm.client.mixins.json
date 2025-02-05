@@ -1,13 +1,15 @@
 {
-	"required": true,
-	"package": "jp.takejohn.chatting_mfm.mixin.client",
-	"compatibilityLevel": "JAVA_21",
-	"client": [
-		"ChatHudLineVisibleMixin",
-		"TextRendererMixin",
-		"TextRendererDrawerMixin"
-	],
-	"injectors": {
-		"defaultRequire": 1
+  "required": true,
+  "package": "jp.takejohn.chatting_mfm.mixin.client",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "ChatHudLineVisibleMixin",
+    "TextHandlerMixin",
+    "TextHandlerWidthLimitingVisitorMixin",
+    "TextRendererDrawerMixin",
+    "TextRendererMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
 	}
 }
