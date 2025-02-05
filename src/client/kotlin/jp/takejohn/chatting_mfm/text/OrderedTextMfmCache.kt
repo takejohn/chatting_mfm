@@ -1,5 +1,6 @@
 package jp.takejohn.chatting_mfm.text
 
+import jp.takejohn.chatting_mfm.CONFIG
 import net.minecraft.text.OrderedText
 import java.util.WeakHashMap
 
@@ -9,19 +10,36 @@ import java.util.WeakHashMap
  * [OrderedText] がメモリから解放されると [StyledMfm] も自動的に削除される。
  */
 object OrderedTextMfmCache {
-    private val map = WeakHashMap<OrderedText, List<StyledMfm>>()
+    private val map = WeakHashMap<OrderedText, Lazy<List<StyledMfm>>>()
 
     /**
      * [OrderedText] から作成された [StyledMfm] の [List] を返す。
      */
     fun get(orderedText: OrderedText): List<StyledMfm>? {
-        return map[orderedText]
+        if (!CONFIG.isEnabled) {
+            return null
+        }
+        return map[orderedText]?.value
     }
 
     /**
      * [OrderedText] から [StyledMfm] の [List] を作成して保存する。
      */
     fun add(orderedText: OrderedText) {
-        map[orderedText] = StyledMfm.listFrom(orderedText)
+        map[orderedText] = object : Lazy<List<StyledMfm>> {
+            var maybeValue: List<StyledMfm>? = null
+
+            override val value: List<StyledMfm>
+                get() {
+                    maybeValue?.let {
+                        return it
+                    }
+                    val value = StyledMfm.listFrom(orderedText)
+                    maybeValue = value
+                    return value
+                }
+
+            override fun isInitialized(): Boolean = maybeValue != null
+        }
     }
 }

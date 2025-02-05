@@ -26,6 +26,12 @@
 				"value": "jp.takejohn.chatting_mfm.ChattingMFMClient",
 				"adapter": "kotlin"
 			}
+		],
+		"modmenu": [
+			{
+				"value": "jp.takejohn.chatting_mfm.ChattingMFMModMenuApi",
+				"adapter": "kotlin"
+			}
 		]
 	},
 	"mixins": [
@@ -41,7 +47,9 @@
 		"minecraft": "~1.21.4",
 		"java": ">=21",
 		"fabric-api": "*",
-		"fabric-language-kotlin": "*"
+		"fabric-language-kotlin": "*",
+		"cloth-config": "*",
+		"modmenu": "*"
 	},
 	"suggests": {
 		"another-mod": "*"
