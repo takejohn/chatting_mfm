@@ -5,7 +5,6 @@
   "client": [
     "ChatHudLineVisibleMixin",
     "TextHandlerMixin",
-    "TextHandlerWidthLimitingVisitorMixin",
     "TextRendererDrawerMixin",
     "TextRendererMixin"
   ],
