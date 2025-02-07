@@ -1,13 +1,10 @@
 package jp.takejohn.chatting_mfm.mixin.client;
 
 import com.google.common.collect.Lists;
-import com.mojang.blaze3d.systems.RenderSystem;
 import jp.takejohn.chatting_mfm.emoji.MisskeyEmoji;
 import jp.takejohn.chatting_mfm.texture.TextureRectangle;
 import jp.takejohn.chatting_mfm.mixininterface.AddEmoji;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gl.ShaderProgramKeys;
-import net.minecraft.client.render.*;
 import net.minecraft.text.Style;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
@@ -78,45 +75,7 @@ abstract public class TextRendererDrawerMixin implements AddEmoji {
         }
 
         for (final TextureRectangle textureRectangle : textureRectangles) {
-            drawTextureRectangle(textureRectangle);
+            textureRectangle.draw(matrix, light);
         }
-    }
-
-    @Unique
-    public void drawTextureRectangle(TextureRectangle textureRectangle) {
-        final float minX = textureRectangle.getMinX();
-        final float minY = textureRectangle.getMinY();
-        final float maxX = textureRectangle.getMaxX();
-        final float maxY = textureRectangle.getMaxY();
-        final float zIndex = textureRectangle.getZIndex();
-
-        final float minU = 0.0f;
-        final float minV = 0.0f;
-        final float maxU = 1.0f;
-        final float maxV = 1.0f;
-
-        Tessellator tessellator = Tessellator.getInstance();
-
-        BufferBuilder bufferBuilder = tessellator.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
-
-        // 長方形の頂点データを作成 (反時計回り)
-        setVertex(bufferBuilder, minX, minY, zIndex, minU, minV, light); // 左上
-        setVertex(bufferBuilder, minX, maxY, zIndex, minU, maxV, light); // 左下
-        setVertex(bufferBuilder, maxX, maxY, zIndex, maxU, maxV, light); // 右下
-        setVertex(bufferBuilder, maxX, minY, zIndex, maxU, minV, light); // 右上
-
-        RenderSystem.setShader(ShaderProgramKeys.POSITION_TEX);
-        RenderSystem.setShaderTexture(0, textureRectangle.getTextureId());
-
-        BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
-    }
-
-    @Unique
-    private void setVertex(BufferBuilder bufferBuilder, float x, float y, float z, float u, float v, int light) {
-        bufferBuilder
-                .vertex(matrix, x, y, z)
-                .color(255, 255, 255, 255)
-                .texture(u, v)
-                .light(light);
     }
 }
