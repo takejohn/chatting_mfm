@@ -1,4 +1,5 @@
 {
     "text.autoconfig.chattingmfm.title": "Chatting MFM Options",
-    "text.autoconfig.chattingmfm.option.isEnabled": "Enable this mod"
+    "text.autoconfig.chattingmfm.option.isEnabled": "Enable this mod",
+    "text.autoconfig.chattingmfm.option.emojiMisskeyServer": "The domain name of Misskey Server to fetch custom emojis"
 }

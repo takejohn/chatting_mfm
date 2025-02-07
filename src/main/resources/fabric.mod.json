@@ -42,6 +42,14 @@
 		}
 	],
 	"accessWidener": "chatting_mfm.accesswidener",
+	"custom": {
+		"loom:injected_interfaces": {
+			"net/minecraft/client/font/TextRenderer\$Drawer": [
+				"jp/takejohn/chatting_mfm/mixininterface/AddEmoji"
+			],
+			"net/minecraft/client/font/BakedGlyph": ["jp/takejohn/chatting_mfm/mixininterface/DrawImageRectangle"]
+		}
+	},
 	"depends": {
 		"fabricloader": ">=0.16.10",
 		"minecraft": "~1.21.4",

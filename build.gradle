@@ -66,6 +66,7 @@ dependencies {
 	modImplementation("com.terraformersmc:modmenu:${project.modmenu_version}")
 
 	shadowBundle implementation("com.github.samunohito:mfm.kt:0.0.3")
+	shadowBundle implementation("org.sejda.imageio:webp-imageio:0.1.6")
 
 	testImplementation 'org.junit.jupiter:junit-jupiter:5.11.4'
 }

@@ -22,6 +22,7 @@ object DrawableMfm {
                 is MfmQuote -> DrawableMfmQuote(style, it.children)
                 is MfmUrl -> DrawableMfmText(createUrlStyle(style, it.props.url), MfmText.Props(it.props.url))
                 is MfmLink -> DrawableSimpleStyle(createUrlStyle(style, it.props.url), it.children)
+                is MfmEmojiCode -> DrawableMfmEmojiCode(style, it.props)
                 else -> DrawableMfmText(style, MfmText.Props(it.stringify()))
             }
         }

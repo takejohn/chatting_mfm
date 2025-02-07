@@ -12,7 +12,7 @@ import org.apache.commons.lang3.mutable.MutableInt
 /**
  * [Style] が適用された MFM。
  */
-class StyledMfm(mfm: List<IMfmNode>, style: Style) {
+class StyledMfm(val mfm: List<IMfmNode>, style: Style) {
     private val drawable = DrawableMfm.listFrom(style, mfm)
 
     companion object {

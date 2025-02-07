@@ -1,6 +1,6 @@
 package jp.takejohn.chatting_mfm.mixin.client;
 
-import jp.takejohn.chatting_mfm.text.OrderedTextMfmCache;
+import jp.takejohn.chatting_mfm.text.ChatTextHandler;
 import net.minecraft.client.gui.hud.ChatHudLine;
 import net.minecraft.client.gui.hud.MessageIndicator;
 import net.minecraft.text.OrderedText;
@@ -13,6 +13,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class ChatHudLineVisibleMixin {
     @Inject(method = "<init>", at = @At("TAIL"))
     private void init(int i, OrderedText orderedText, MessageIndicator messageIndicator, boolean bl, CallbackInfo ci) {
-        OrderedTextMfmCache.INSTANCE.add(orderedText);
+        ChatTextHandler.INSTANCE.accept(orderedText);
     }
 }

@@ -1,4 +1,5 @@
 {
-  "text.autoconfig.chattingmfm.title": "Chatting MFMの設定",
-  "text.autoconfig.chattingmfm.option.isEnabled": "このModを有効にする"
+    "text.autoconfig.chattingmfm.title": "Chatting MFMの設定",
+    "text.autoconfig.chattingmfm.option.isEnabled": "このModを有効にする",
+    "text.autoconfig.chattingmfm.option.emojiMisskeyServer": "カスタム絵文字を取得するMisskeyサーバーのドメイン名"
 }

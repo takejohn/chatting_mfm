@@ -25,8 +25,8 @@ object OrderedTextMfmCache {
     /**
      * [OrderedText] から [StyledMfm] の [List] を作成して保存する。
      */
-    fun add(orderedText: OrderedText) {
-        map[orderedText] = object : Lazy<List<StyledMfm>> {
+    fun add(orderedText: OrderedText): Lazy<List<StyledMfm>> {
+        val result = object : Lazy<List<StyledMfm>> {
             var maybeValue: List<StyledMfm>? = null
 
             override val value: List<StyledMfm>
@@ -41,5 +41,7 @@ object OrderedTextMfmCache {
 
             override fun isInitialized(): Boolean = maybeValue != null
         }
+        map[orderedText] = result
+        return result
     }
 }
