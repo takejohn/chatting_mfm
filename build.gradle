@@ -3,6 +3,7 @@ plugins {
 	id 'maven-publish'
 	id "org.jetbrains.kotlin.jvm" version "2.1.10"
 	id "com.gradleup.shadow" version "9.0.0-beta7"
+	id "com.modrinth.minotaur" version "2.+"
 }
 
 version = project.mod_version
@@ -133,5 +134,18 @@ publishing {
 		// Notice: This block does NOT have the same function as the block in the top level.
 		// The repositories here will be used for publishing your artifact, not for
 		// retrieving dependencies.
+	}
+}
+
+modrinth {
+	token = project.findProperty("modrinth_token") ?: System.getenv("MODRINTH_TOKEN")
+	projectId = "TftdWrHJ"
+	versionNumber = project.mod_version
+	versionType = "alpha"
+	uploadFile = remapJar
+	gameVersions = [project.minecraft_version]
+	syncBodyFrom = rootProject.file("README.md").text
+	dependencies {
+		required.project "fabric-api"
 	}
 }
