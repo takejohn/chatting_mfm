@@ -8,6 +8,7 @@ plugins {
 
 version = project.mod_version
 group = project.maven_group
+dependency_mods = (project.dependency_mods as String).split(",")
 
 base {
 	archivesName = project.archives_base_name
@@ -80,7 +81,12 @@ processResources {
 	inputs.property "version", project.version
 
 	filesMatching("fabric.mod.json") {
-		expand "version": project.version
+		expand (
+			"version": project.version,
+			"dependencies": dependency_mods.collect {
+				"\"${it}\":\"*\""
+			}.join(",")
+		)
 	}
 }
 
@@ -146,6 +152,6 @@ modrinth {
 	gameVersions = [project.minecraft_version]
 	syncBodyFrom = rootProject.file("README.md").text
 	dependencies {
-		required.project "fabric-api"
+		required.project dependency_mods
 	}
 }

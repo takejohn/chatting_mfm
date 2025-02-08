@@ -54,10 +54,7 @@
 		"fabricloader": ">=0.16.10",
 		"minecraft": "~1.21.4",
 		"java": ">=21",
-		"fabric-api": "*",
-		"fabric-language-kotlin": "*",
-		"cloth-config": "*",
-		"modmenu": "*"
+		$dependencies
 	},
 	"suggests": {
 		"another-mod": "*"
