@@ -151,6 +151,8 @@ modrinth {
 	uploadFile = remapJar
 	gameVersions = [project.minecraft_version]
 	syncBodyFrom = rootProject.file("README.md").text
+	changelog = rootProject.file("changelogs/${project.mod_version}.md").text
+	debugMode = System.getenv("CI") != "true"
 	dependencies {
 		required.project dependency_mods
 	}
