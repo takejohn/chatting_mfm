@@ -3,16 +3,13 @@ package jp.takejohn.chatting_mfm.emoji
 import jp.takejohn.chatting_mfm.CONFIG
 import jp.takejohn.chatting_mfm.ChattingMFM
 import net.minecraft.client.MinecraftClient
-import net.minecraft.client.texture.NativeImage
 import net.minecraft.client.texture.NativeImageBackedTexture
-import net.minecraft.util.Identifier
-import java.awt.image.BufferedImage
+import java.io.InputStream
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 import java.util.concurrent.CompletableFuture
-import javax.imageio.ImageIO
 
 object MisskeyEmojiCache {
     private val client = HttpClient.newBuilder().followRedirects(HttpClient.Redirect.NORMAL).build()
@@ -39,27 +36,18 @@ object MisskeyEmojiCache {
             return CompletableFuture.completedFuture(null)
         }
 
-        val uri = tryCreateEmojiUri(name) ?: return CompletableFuture.completedFuture(null)
-        val request = HttpRequest.newBuilder()
+        val uri = tryCreateEmojiApiUri() ?: return CompletableFuture.completedFuture(null)
+        val request = HttpRequest
+            .newBuilder()
             .uri(uri)
+            .header("Content-Type", "application/json")
+            .POST(HttpRequest.BodyPublishers.ofString("""{"name": "$name"}"""))
             .build()
 
-        val future = client.sendAsync(request, HttpResponse.BodyHandlers.ofInputStream()).handle { response, e ->
-            e?.let {
-                ChattingMFM.logger.warn("Failed to send request to Misskey server:", e)
-                return@handle null
-            }
-            try {
-                if (response.statusCode() == 200) {
-                    // HTTP レスポンスステータスコード 200: OK
-                    return@handle createMisskeyEmoji(name, ImageIO.read(response.body()))
-                }
-                ChattingMFM.logger.warn("Misskey server responded with status other than 200: ${response.statusCode()}")
-            } catch (e: Exception) {
-                ChattingMFM.logger.warn("Failed to parse emoji:", e)
-            }
-            return@handle null
-        }
+        val future = client
+            .sendAsync(request, HttpResponse.BodyHandlers.ofString())
+            .handle(this::handleEmojiApiResponse)
+            .thenCompose(this::requestEmoji)
         emojis[name] = future
         return future
     }
@@ -71,36 +59,67 @@ object MisskeyEmojiCache {
         emojis.clear()
     }
 
-    private fun tryCreateEmojiUri(emojiName: String): URI? {
+    private fun tryCreateEmojiApiUri(): URI? {
         try {
-            return URI.create("https://${CONFIG.emojiMisskeyServer}/emoji/${emojiName}.webp")
+            return URI.create("https://${CONFIG.emojiMisskeyServer}/api/emoji")
         } catch (e: Exception) {
             ChattingMFM.logger.warn("Invalid Misskey server:", e)
             return null
         }
     }
 
-    private fun createMisskeyEmoji(name: String, image: BufferedImage): MisskeyEmoji {
-        val nativeImage = bufferedImageToNativeImage(image)
-        val id = registerEmojiTexture(name, nativeImage)
-        return MisskeyEmoji(name, id, nativeImage)
+    private fun registerEmojiTexture(frame: MisskeyEmoji.Frame) {
+        MinecraftClient.getInstance().textureManager.registerTexture(
+            frame.textureId, NativeImageBackedTexture(frame.image)
+        )
     }
 
-    private fun bufferedImageToNativeImage(bufferedImage: BufferedImage): NativeImage {
-        val nativeImage = NativeImage(bufferedImage.width, bufferedImage.height, false);
-        val width = bufferedImage.width
-        val height = bufferedImage.height
-        for (y in 0..<height) {
-            for (x in 0..<width) {
-                nativeImage.setColorArgb(x, y, bufferedImage.getRGB(x, y))
-            }
+    private fun handleEmojiApiResponse(response: HttpResponse<String>, e: Throwable?): MisskeyEmojiDetailed? {
+        val body = checkResponse(response, e) ?: return null
+
+        try {
+            return MisskeyEmojiDetailedData.fromJson(body)
+        } catch (e: Exception) {
+            ChattingMFM.logger.warn("Failed to parse response from Misskey server:", e)
+            return null
         }
-        return nativeImage
     }
 
-    private fun registerEmojiTexture(name: String, image: NativeImage): Identifier {
-        val id = Identifier.of("chatting_mfm", "textures/temporal/emoji_$name")
-        MinecraftClient.getInstance().textureManager.registerTexture(id, NativeImageBackedTexture(image))
-        return id
+    private fun requestEmoji(data: MisskeyEmojiDetailed?): CompletableFuture<MisskeyEmoji?> {
+        data ?: return CompletableFuture.completedFuture(null)
+        val uri = URI.create(data.url)
+        val request = HttpRequest.newBuilder().uri(uri).build()
+        return client
+            .sendAsync(request, HttpResponse.BodyHandlers.ofInputStream())
+            .handle { response, e ->
+                val body = checkResponse(response, e) ?: return@handle null
+                return@handle createMisskeyEmoji(data, body)
+            }
+    }
+
+    private fun createMisskeyEmoji(data: MisskeyEmojiDetailed?, inputStream: InputStream): MisskeyEmoji? {
+        return data?.let {
+            val emoji = MisskeyEmoji.create(data, inputStream) ?: return null
+            for (frame in emoji.frames) {
+                registerEmojiTexture(frame)
+            }
+            emoji
+        }
+    }
+
+    private fun <T> checkResponse(response: HttpResponse<T>, e: Throwable?): T? {
+        e?. let {
+            ChattingMFM.logger.warn("Failed to send request to Misskey server (${response.uri()}):", e)
+            return null
+        }
+
+        // HTTP レスポンスステータスコード 200: OK
+        val statusCode = response.statusCode()
+        return if (statusCode == 200) {
+            response.body()
+        } else {
+            ChattingMFM.logger.warn("Misskey server responded with status other than 200 (${response.uri()}): $statusCode")
+            null
+        }
     }
 }

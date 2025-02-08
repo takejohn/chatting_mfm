@@ -56,7 +56,7 @@ abstract public class TextRendererDrawerMixin implements AddEmoji {
     }
 
     @Override
-    public boolean chatting_mfm$addEmoji(int index, Style style, MisskeyEmoji emoji) {
+    public boolean chatting_mfm$addEmoji(int index, Style style, MisskeyEmoji.Frame emoji) {
         final float width = emoji.getWidth();
         final float minX = index == 0 ? x - 1.0f : x;
         final float maxX = x + width;
